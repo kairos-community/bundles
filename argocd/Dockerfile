@@ -1,6 +1,6 @@
 FROM alpine as build
 # renovate: datasource=github-releases depName=argoproj/argo-cd
-ENV VERSION=v3.4.4
+ENV VERSION=v3.4.5
 ARG TARGETARCH
 RUN if [[ "$TARGETARCH" = "amd64" ]]; then \
       export CHECKSUM=a683ed902e3b7cdfd2b50d7a82b93ce00883064bca58418cace5e643ba755769; \
