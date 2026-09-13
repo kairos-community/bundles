@@ -30,7 +30,7 @@ readConfig() {
         VERSION=$_version
     fi
     _addresspool=$(getConfig metallb.address_pool)
-    if [ "$_version" != "" ]; then
+    if [ "$_addresspool" != "" ]; then
         ADDRESS_POOL=$_addresspool
     fi
 }
