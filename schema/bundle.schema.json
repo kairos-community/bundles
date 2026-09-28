@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bundles.kairos.io/schema/bundle.schema.json",
+  "title": "Kairos community bundle manifest",
+  "type": "object",
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": { "const": "bundles.kairos.io/v1alpha1" },
+    "kind": { "const": "Bundle" },
+    "metadata": {
+      "type": "object",
+      "required": ["name", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$" },
+        "description": { "type": "string", "maxLength": 200 },
+        "home": { "type": "string", "format": "uri" },
+        "sources": { "type": "array", "items": { "type": "string", "format": "uri" } },
+        "maintainers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "email": { "type": "string", "format": "email" },
+              "url": { "type": "string", "format": "uri" }
+            }
+          }
+        },
+        "keywords": { "type": "array", "items": { "type": "string" } },
+        "icon": { "type": "string" }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "required": ["version", "type", "platforms"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Bundle version (semver). Bumped on any change to the bundle directory.",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z.-]+)?$"
+        },
+        "appVersion": {
+          "type": "string",
+          "description": "Default upstream version shipped by this bundle. Owned by Renovate."
+        },
+        "components": {
+          "type": "object",
+          "description": "Additional pinned upstream components, keyed by name.",
+          "additionalProperties": { "type": "string" }
+        },
+        "type": { "enum": ["run", "container", "package"] },
+        "platforms": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "enum": ["linux/amd64", "linux/arm64"] }
+        },
+        "requires": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kairos": { "type": "string", "description": "Semver constraint on the Kairos version." },
+            "distributions": {
+              "type": "array",
+              "description": "Kubernetes distributions the bundle supports. Empty means host-only.",
+              "items": { "enum": ["k3s", "k0s"] }
+            }
+          }
+        },
+        "config": {
+          "type": "object",
+          "required": ["key"],
+          "additionalProperties": false,
+          "properties": {
+            "key": { "type": "string", "description": "Top-level cloud-config key the bundle reads." },
+            "schema": { "type": "string", "description": "Path to a JSON schema for that block, relative to the bundle directory." }
+          }
+        }
+      }
+    }
+  }
+}
